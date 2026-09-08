@@ -25,10 +25,6 @@
 
 // What is the greatest product of four adjacent numbers in the same direction (up, down, left, right, or diagonally) in the 20 * 20 grid?
 
-const log = (val) => {
-    console.log(val);
-};
-
 const grid = `08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
 49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00
 81 49 31 73 55 79 14 29 93 71 40 67 53 88 30 03 49 13 36 65
@@ -54,109 +50,108 @@ const arrayGrid = grid.split("\n").map((string) =>
     string.split(" ").map((ele) => Number(ele))
 );
 
-const getRightProduct = (row, column) => {
-    let product = arrayGrid[row].slice(column, column + 4).reduce(
+const getRightProduct = (row, column, noOfElements) => {
+    let product = arrayGrid[row].slice(column, column + noOfElements).reduce(
         (acc, element) => acc * element,
         1,
     );
     return product;
 };
 
-const getBottomProduct = (row, column) => {
+const product = (row, column, fn, noOfElements) => {
     let product = 1;
     let horizon = row;
     let vertical = column;
-    while (horizon < row + 4) {
+    while (horizon < row + noOfElements) {
         product *= arrayGrid[horizon][vertical];
         horizon++;
+        if (fn === "leftBottom") vertical--;
+        if (fn === "rightBottom") vertical++;
     }
     return product;
 };
 
-const getRightBottomDiagonalProduct = (row, column) => {
-    let product = 1;
-    let horizon = row;
-    let vertical = column;
-    while (horizon < row + 4) {
-        product *= arrayGrid[horizon][vertical];
-        horizon++;
-        vertical++;
-    }
-    return product;
-};
+const getProduct = (row, column, noOfElements) => {
+    let rightProduct = 0;
+    let rightBottomDiagonalProduct = 0;
+    let leftBottomDiagonalProduct = 0;
+    let bottomProduct = 0;
 
-const getLeftBottomDiagonalProduct = (row, column) => {
-    let product = 1;
-    let horizon = row;
-    let vertical = column;
-    while (horizon < row + 4) {
-        product *= arrayGrid[horizon][vertical];
-        horizon++;
-        vertical--;
-    }
-    return product;
-};
-
-let largestProduct = 0;
-
-for (let row = 0; row < arrayGrid.length; row++) {
-    for (let column = 0; column < arrayGrid[row].length; column++) {
-        let rightProduct = 0;
-        let rightBottomDiagonalProduct = 0;
-        let leftBottomDiagonalProduct = 0;
-        let bottomProduct = 0;
-        let maxProduct = 0;
-
-        if (column < 3 && row <= arrayGrid.length - 4) {
-            rightBottomDiagonalProduct = getRightBottomDiagonalProduct(
-                row,
-                column,
-            );
-        }
-
-        if (
-            column >= arrayGrid[row].length - 4 && row <= arrayGrid.length - 4
-        ) {
-            leftBottomDiagonalProduct = getLeftBottomDiagonalProduct(
-                row,
-                column,
-            );
-        }
-
-        if (
-            column >= 3 && column <= arrayGrid[row].length - 4 &&
-            row <= arrayGrid.length - 4
-        ) {
-            rightBottomDiagonalProduct = getRightBottomDiagonalProduct(
-                row,
-                column,
-            );
-            leftBottomDiagonalProduct = getLeftBottomDiagonalProduct(
-                row,
-                column,
-            );
-        }
-
-        if (column <= arrayGrid[row].length - 4) {
-            rightProduct = getRightProduct(row, column);
-        }
-
-        if (row <= arrayGrid[row].length - 4) {
-            bottomProduct = getBottomProduct(row, column);
-        }
-
-        maxProduct = Math.max(
-            bottomProduct,
-            rightProduct,
-            leftBottomDiagonalProduct,
-            rightBottomDiagonalProduct,
-            maxProduct,
+    if (column < noOfElements - 1 && row <= arrayGrid.length - noOfElements) {
+        rightBottomDiagonalProduct = product(
+            row,
+            column,
+            "rightBottom",
+            noOfElements,
         );
-
-        largestProduct = largestProduct < maxProduct
-            ? maxProduct
-            : largestProduct;
     }
-}
 
-console.log(largestProduct);
+    if (
+        column >= arrayGrid[row].length - noOfElements &&
+        row <= arrayGrid.length - noOfElements
+    ) {
+        leftBottomDiagonalProduct = product(
+            row,
+            column,
+            "leftBottom",
+            noOfElements,
+        );
+    }
+
+    if (
+        column >= noOfElements - 1 &&
+        column <= arrayGrid[row].length - noOfElements &&
+        row <= arrayGrid.length - noOfElements
+    ) {
+        rightBottomDiagonalProduct = product(
+            row,
+            column,
+            "rightBottom",
+            noOfElements,
+        );
+        leftBottomDiagonalProduct = product(
+            row,
+            column,
+            "leftBottom",
+            noOfElements,
+        );
+    }
+
+    if (column <= arrayGrid[row].length - noOfElements) {
+        rightProduct = getRightProduct(row, column, noOfElements);
+    }
+
+    if (row <= arrayGrid[row].length - noOfElements) {
+        bottomProduct = product(row, column, "", noOfElements);
+    }
+    return [
+        bottomProduct,
+        rightProduct,
+        rightBottomDiagonalProduct,
+        leftBottomDiagonalProduct,
+    ];
+};
+
+const largestProduct = (noOfElements) => {
+    let largestProduct = 0;
+
+    for (let row = 0; row < arrayGrid.length; row++) {
+        for (let column = 0; column < arrayGrid[row].length; column++) {
+            let maxProduct = 0;
+
+            const [bottom, right, rightBottom, leftBottom] = getProduct(
+                row,
+                column,
+                noOfElements,
+            );
+            maxProduct = Math.max(bottom, right, leftBottom, rightBottom);
+
+            largestProduct = largestProduct < maxProduct
+                ? maxProduct
+                : largestProduct;
+        }
+    }
+    return largestProduct;
+};
+
+console.log(largestProduct(4));
