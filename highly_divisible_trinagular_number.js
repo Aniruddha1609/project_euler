@@ -2,3 +2,27 @@
 // Let us list the factors of the first seven triangle numbers:  1: 1 | 3 : 1, 3 | .....
 // We can see that  is the first triangle number to have over five divisors.
 // What is the value of the first triangle number to have over five hundred divisors?
+
+const getNoOfDivisor = (dividend) => {
+    let count = 0;
+    for (let divisor = 2; divisor <= Math.floor(dividend / 2); divisor++) {
+        if (dividend % divisor === 0) count++;
+    }
+    count += 2;
+    return count;
+};
+
+const firstTriangleNumberWithDivisorLimit = (limit) => {
+    let noOfDivisor = 1;
+    let dividend = 1;
+    let counter = 2;
+    while (noOfDivisor !== limit) {
+        dividend += counter;
+        counter++;
+
+        noOfDivisor = getNoOfDivisor(dividend);
+    }
+    return dividend;
+};
+
+console.log(firstTriangleNumberWithDivisorLimit(500));
