@@ -5,9 +5,12 @@
 
 const getNoOfDivisor = (dividend) => {
     let count = 0;
-    for (let divisor = 2; divisor <= Math.floor(dividend / 2); divisor++) {
-        if (dividend % divisor === 0) count++;
+    for (let divisor = 2; divisor <= Math.sqrt(dividend); divisor++) {
+        if (dividend % divisor === 0) {
+            count++;
+        }
     }
+    count += count;
     count += 2;
     return count;
 };
@@ -16,7 +19,7 @@ const firstTriangleNumberWithDivisorLimit = (limit) => {
     let noOfDivisor = 1;
     let dividend = 1;
     let counter = 2;
-    while (noOfDivisor !== limit) {
+    while (noOfDivisor < limit) {
         dividend += counter;
         counter++;
 
