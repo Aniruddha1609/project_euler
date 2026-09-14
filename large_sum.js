@@ -107,13 +107,17 @@ const matrix = stringGrid.split("\n").map((stringOfDigits) =>
 
 let sum = matrix[0];
 
-for (let row = 1; row < matrix.length; row++) {
-    sum += matrix[row];
-}
+const first10DigitsOfSum = (length) => {
+    for (let row = 1; row < matrix.length; row++) {
+        sum += matrix[row];
+    }
 
-let sumInString = String(sum);
-const index = sumInString.indexOf(".");
-let arrayOfSumDigit = sumInString.split("");
-arrayOfSumDigit.splice(index, 1);
-const firstSevenDigits = Number(arrayOfSumDigit.slice(0, 10).join(""));
-console.log(firstSevenDigits);
+    let sumInString = String(sum);
+    const index = sumInString.indexOf(".");
+    let arrayOfSumDigit = sumInString.split("");
+    arrayOfSumDigit.splice(index, 1);
+    const firstSevenDigits = Number(arrayOfSumDigit.slice(0, length).join(""));
+    console.log(firstSevenDigits);
+};
+
+first10DigitsOfSum(10);
