@@ -6,8 +6,6 @@ let COLOUMNLIMIT;
 
 const route = (row, column, count) => {
     if (row === ROWLIMIT && column === COLOUMNLIMIT) {
-        console.log(count);
-
         count.push(count[0] + 1);
         count.shift();
         return;
@@ -21,12 +19,12 @@ const route = (row, column, count) => {
 };
 
 const routeCount = (rowLimit, columnLimit) => {
-    ROWLIMIT = rowLimit;
-    COLOUMNLIMIT = columnLimit;
+    ROWLIMIT = rowLimit - 1;
+    COLOUMNLIMIT = columnLimit - 1;
     let count = [0];
     route(0, 0, count);
     return count;
 };
 
-const [count] = routeCount(5, 5);
+const [count] = routeCount(3, 3);
 console.log(count);
