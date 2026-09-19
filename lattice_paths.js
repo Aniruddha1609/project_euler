@@ -19,12 +19,12 @@ const route = (row, column, count) => {
 };
 
 const routeCount = (rowLimit, columnLimit) => {
-    ROWLIMIT = rowLimit - 1;
-    COLOUMNLIMIT = columnLimit - 1;
+    ROWLIMIT = rowLimit;
+    COLOUMNLIMIT = columnLimit;
     let count = [0];
     route(0, 0, count);
     return count;
 };
 
-const [count] = routeCount(3, 3);
+const [count] = routeCount(2, 2);
 console.log(count);
