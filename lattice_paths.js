@@ -4,37 +4,43 @@
 let ROWLIMIT;
 let COLOUMNLIMIT;
 
+const routesFromCurrentPoint = (count, routesAtCurrentPoint = 1) => {
+    count.push(count[0] + routesAtCurrentPoint);
+    count.shift();
+    return;
+};
+
+const currentPointRoute = (row, column) => {
+    return row + " " + column;
+};
+
 const routeObj = {};
 let point;
+
 const route = (row, column, count) => {
-    let currentPoint;
-    currentPoint = row + " " + column;
-    if (routeObj[currentPoint]) {
-        count.push(count[0] + routeObj[currentPoint]);
-        count.shift();
-        return;
+    point = currentPointRoute(row, column);
+    if (routeObj[point]) {
+        return routesFromCurrentPoint(count, routeObj[point]);
     }
     if (row === ROWLIMIT && column === COLOUMNLIMIT) {
-        count.push(count[0] + 1);
-        count.shift();
-        return;
+        return routesFromCurrentPoint(count);
     }
     if (row !== ROWLIMIT && column !== COLOUMNLIMIT) {
         route(row, column + 1, count);
         route(row + 1, column, count);
-        point = row + " " + column;
-        const leftChild = row + " " + (column + 1);
-        const rightChild = (row + 1) + " " + column;
+        point = currentPointRoute(row, column);
+        const leftChild = currentPointRoute(row, column + 1);
+        const rightChild = currentPointRoute(row + 1, column);
         routeObj[point] = routeObj[leftChild] + routeObj[rightChild];
     }
     if (row === ROWLIMIT) {
         route(row, column + 1, count);
-        point = row + " " + column;
+        point = currentPointRoute(row, column);
         routeObj[point] = 1;
     }
     if (column === COLOUMNLIMIT) {
         route(row + 1, column, count);
-        point = row + " " + column;
+        point = currentPointRoute(row, column);
         routeObj[point] = 1;
     }
 };
