@@ -4,7 +4,16 @@
 let ROWLIMIT;
 let COLOUMNLIMIT;
 
+const routeObj = {};
+let point;
 const route = (row, column, count) => {
+    let currentPoint;
+    currentPoint = row + " " + column;
+    if (routeObj[currentPoint]) {
+        count.push(count[0] + routeObj[currentPoint]);
+        count.shift();
+        return;
+    }
     if (row === ROWLIMIT && column === COLOUMNLIMIT) {
         count.push(count[0] + 1);
         count.shift();
@@ -13,9 +22,21 @@ const route = (row, column, count) => {
     if (row !== ROWLIMIT && column !== COLOUMNLIMIT) {
         route(row, column + 1, count);
         route(row + 1, column, count);
+        point = row + " " + column;
+        const leftChild = row + " " + (column + 1);
+        const rightChild = (row + 1) + " " + column;
+        routeObj[point] = routeObj[leftChild] + routeObj[rightChild];
     }
-    if (row === ROWLIMIT) route(row, column + 1, count);
-    if (column === COLOUMNLIMIT) route(row + 1, column, count);
+    if (row === ROWLIMIT) {
+        route(row, column + 1, count);
+        point = row + " " + column;
+        routeObj[point] = 1;
+    }
+    if (column === COLOUMNLIMIT) {
+        route(row + 1, column, count);
+        point = row + " " + column;
+        routeObj[point] = 1;
+    }
 };
 
 const routeCount = (rowLimit, columnLimit) => {
@@ -26,5 +47,5 @@ const routeCount = (rowLimit, columnLimit) => {
     return count;
 };
 
-const [count] = routeCount(2, 2);
+const [count] = routeCount(20, 20);
 console.log(count);
