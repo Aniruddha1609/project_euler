@@ -5,17 +5,12 @@
 // Determine the minimum total cost required to obtain a target area of at least 16 units (16 or more units) by choosing valid slice combinations.
 
 let minCost = Infinity;
-
 let memoizedCost = {};
-let count = 0;
-
 const pizzaSlicePrize = {
     3: 50,
     6: 150,
     9: 300,
 };
-
-const elements = [];
 
 const setPizzaSliceCost = (target, cost, noOfSlice) => {
     if (memoizedCost[target]) {
