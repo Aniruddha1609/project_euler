@@ -5,7 +5,8 @@
 // Determine the minimum total cost required to obtain a target area of at least 16 units (16 or more units) by choosing valid slice combinations.
 
 let minCost = Infinity;
-let memoizedCost = {};
+const memoizedCost = {};
+
 const pizzaPrice = {
     3: 50,
     6: 150,
@@ -16,55 +17,32 @@ const smallPizza = 3;
 const mediumPizza = 6;
 const largePizza = 9;
 
-const setPizzaSliceCost = (target, cost, noOfSlice) => {
-    if (memoizedCost[target]) {
-        if (memoizedCost[target] > cost + pizzaPrice[noOfSlice]) {
-            memoizedCost[target] = cost;
-        }
-        return;
-    }
-    memoizedCost[target] = Math.ceil(target / noOfSlice) *
-        pizzaPrice[noOfSlice];
-};
-
-const lowestCostPizza = (small, medium, large, target, cost) => {
+const lowestCostPizza = (target, cost) => {
     if (target <= 0) {
-        minCost = minCost > cost ? cost : minCost;
-        return;
+        minCost = Math.min(minCost, cost);
+        return 0;
     }
 
-    if (Object.keys(memoizedCost).join("").includes(target.toString())) {
-        lowestCostPizza(small, medium, large, 0, cost + memoizedCost[target]);
-        return;
+    if (target in memoizedCost) {
+        minCost = Math.min(minCost, cost + memoizedCost[target]);
+        return memoizedCost[target];
     }
 
-    lowestCostPizza(
-        smallPizza,
-        medium,
-        large,
-        target - smallPizza,
-        cost + pizzaPrice[smallPizza],
-    );
-    setPizzaSliceCost(target, cost, smallPizza);
+    const costWithSmall = pizzaPrice[smallPizza] +
+        lowestCostPizza(target - smallPizza, cost + pizzaPrice[smallPizza]);
+    const costWithMedium = pizzaPrice[mediumPizza] +
+        lowestCostPizza(target - mediumPizza, cost + pizzaPrice[mediumPizza]);
+    const costWithLarge = pizzaPrice[largePizza] +
+        lowestCostPizza(target - largePizza, cost + pizzaPrice[largePizza]);
 
-    lowestCostPizza(
-        small,
-        mediumPizza,
-        large,
-        target - mediumPizza,
-        cost + pizzaPrice[mediumPizza],
+    memoizedCost[target] = Math.min(
+        costWithSmall,
+        costWithMedium,
+        costWithLarge,
     );
-    setPizzaSliceCost(target, cost, mediumPizza);
 
-    lowestCostPizza(
-        small,
-        medium,
-        largePizza,
-        target - largePizza,
-        cost + pizzaPrice[largePizza],
-    );
-    setPizzaSliceCost(target, cost, largePizza);
+    return memoizedCost[target];
 };
 
-lowestCostPizza(0, 0, 0, 17, 0);
-console.log(minCost);
+lowestCostPizza(23, 0);
+console.log(`₹${minCost}`);
