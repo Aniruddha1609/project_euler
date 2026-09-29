@@ -44,5 +44,5 @@ const lowestCostPizza = (target, cost) => {
     return memoizedCost[target];
 };
 
-lowestCostPizza(23, 0);
-console.log(`₹${minCost}`);
+lowestCostPizza(16, 0);
+console.log(`${minCost}`);
