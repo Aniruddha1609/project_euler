@@ -6,21 +6,25 @@
 
 let minCost = Infinity;
 let memoizedCost = {};
-const pizzaSlicePrize = {
+const pizzaPrice = {
     3: 50,
     6: 150,
     9: 300,
 };
 
+const smallPizza = 3;
+const mediumPizza = 6;
+const largePizza = 9;
+
 const setPizzaSliceCost = (target, cost, noOfSlice) => {
     if (memoizedCost[target]) {
-        if (memoizedCost[target] > cost + pizzaSlicePrize[noOfSlice]) {
+        if (memoizedCost[target] > cost + pizzaPrice[noOfSlice]) {
             memoizedCost[target] = cost;
         }
-    } else {
-        memoizedCost[target] = Math.ceil(target / noOfSlice) *
-            pizzaSlicePrize[noOfSlice];
+        return;
     }
+    memoizedCost[target] = Math.ceil(target / noOfSlice) *
+        pizzaPrice[noOfSlice];
 };
 
 const lowestCostPizza = (small, medium, large, target, cost) => {
@@ -34,15 +38,33 @@ const lowestCostPizza = (small, medium, large, target, cost) => {
         return;
     }
 
-    lowestCostPizza(3, medium, large, target - 3, cost + pizzaSlicePrize[3]);
-    setPizzaSliceCost(target, cost, 3);
+    lowestCostPizza(
+        smallPizza,
+        medium,
+        large,
+        target - smallPizza,
+        cost + pizzaPrice[smallPizza],
+    );
+    setPizzaSliceCost(target, cost, smallPizza);
 
-    lowestCostPizza(small, 6, large, target - 6, cost + pizzaSlicePrize[6]);
-    setPizzaSliceCost(target, cost, 6);
+    lowestCostPizza(
+        small,
+        mediumPizza,
+        large,
+        target - mediumPizza,
+        cost + pizzaPrice[mediumPizza],
+    );
+    setPizzaSliceCost(target, cost, mediumPizza);
 
-    lowestCostPizza(small, medium, 9, target - 9, cost + pizzaSlicePrize[9]);
-    setPizzaSliceCost(target, cost, 9);
+    lowestCostPizza(
+        small,
+        medium,
+        largePizza,
+        target - largePizza,
+        cost + pizzaPrice[largePizza],
+    );
+    setPizzaSliceCost(target, cost, largePizza);
 };
 
-lowestCostPizza(0, 0, 0, 12, 0);
+lowestCostPizza(0, 0, 0, 17, 0);
 console.log(minCost);
